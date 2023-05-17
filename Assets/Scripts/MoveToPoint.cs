@@ -14,7 +14,7 @@ public class MoveToPoint : MonoBehaviour
     private float _timer;
 
     private float _dashLength = 0.24f;
-    private float _dashCooldown = 0.1f;
+    private float _dashCooldown = 0.2f;
 
     private Vector3 direction;
 
@@ -79,7 +79,7 @@ public class MoveToPoint : MonoBehaviour
         {
             StartCoroutine(DashLength());
             Debug.Log("Dash");
-            _dashCooldown = 0.3f;
+            _dashCooldown = 0.5f;
             _animator.SetBool("IsDashing", true);
         }
         _target = transform.position;
