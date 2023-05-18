@@ -13,7 +13,13 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0;
         _startButton.onClick.AddListener(HandleStartButton);
+        PlayerCollisions.OnDeath += DeathCount;
         _gameData.ChickenSpeed = 4;
+    }
+
+    private void OnDisable()
+    {
+        PlayerCollisions.OnDeath -= DeathCount;
     }
 
     private void Update()
@@ -25,6 +31,17 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
         _menuScreen.SetActive(false);
+    }
+
+    private void DeathCount()
+    {
+        _gameData.DeathCounter += 1;
+        Debug.Log("Death");
+        if (_gameData.DeathCounter >= 3)
+        {
+            _gameData.DeathCounter = 0;
+            //play ad
+        }
     }
 
     private void IncreaseDifficulty()

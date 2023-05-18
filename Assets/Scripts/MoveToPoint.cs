@@ -5,48 +5,61 @@ using UnityEngine;
 public class MoveToPoint : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
-
-    public float _speed = 5f;
-    public float _dashSpeed = 12f;
-    private Vector3 _target;
-    private Vector3 _targetDash;
+    [SerializeField] private float _speed = 5f;
+    [SerializeField] private float _dashSpeed = 12f;
+    [SerializeField] private FloatingJoystick _joystick;
 
     private float _timer;
-
     private float _dashLength = 0.24f;
     private float _dashCooldown = 0.2f;
-
-    private Vector3 direction;
+    private Rigidbody2D _rigidbody;
+    private float _moveH, _moveV;
 
     void Start()
     {
-        //_target = transform.position;
+        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
         if (Time.timeScale == 1)
         {
-            if (Input.GetMouseButton(0))
-            {
-                SetTargetPosition();
-            }
-
             if (Input.GetMouseButtonUp(0))
             {
+                _animator.SetBool("IsRunning", false);
                 CheckCanDash();
+                Dash();
             }
 
-            Dash();
-
+            Move();
             DashCooldown();
 
-            direction = _target - transform.position;
-            direction.Normalize();
-
             // define as condições de animação
-            _animator.SetFloat("moveX", direction.x);
-            _animator.SetFloat("moveY", direction.y);
+            _animator.SetFloat("moveX", _joystick.Horizontal);
+            _animator.SetFloat("moveY", _joystick.Vertical);
+        }
+    }
+
+    private void Move()
+    {
+        _moveH = _joystick.Horizontal;
+        _moveV = _joystick.Vertical;
+
+        if (_moveH != 0 || _moveV != 0)
+        {
+            _animator.SetBool("IsRunning", true);
+            _timer += Time.deltaTime;
+        }
+
+        if (!Mathf.Approximately(0, _joystick.Horizontal))
+        {
+            transform.rotation = _joystick.Horizontal < 0 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
+        }
+
+        if (!_animator.GetBool("IsDashing"))
+        {
+
+            _rigidbody.velocity = new Vector2(_moveH * _speed, _moveV * _speed);
         }
     }
 
@@ -63,21 +76,17 @@ public class MoveToPoint : MonoBehaviour
         if (_dashLength > 0)
         {
             _dashLength -= Time.deltaTime;
-
-            transform.position = Vector3.MoveTowards(transform.position, _targetDash, _dashSpeed * Time.deltaTime);
-        }
-
-        else
-        {
-            transform.position = Vector3.MoveTowards(transform.position, _target, _speed * Time.deltaTime);
+            Vector2 dashDirection = new Vector2(_moveH, _moveV).normalized;
+            _rigidbody.velocity = dashDirection * _dashSpeed;
         }
     }
 
     private void CheckCanDash()
     {
-        _animator.SetFloat("lastX", direction.x);
-        _animator.SetFloat("lastY", direction.y);
+        _animator.SetFloat("lastX", _moveH);
+        _animator.SetFloat("lastY", _moveV);
         _animator.SetBool("IsRunning", false);
+
         if (_timer < 0.2f && _dashCooldown <= 0)
         {
             StartCoroutine(DashLength());
@@ -85,31 +94,14 @@ public class MoveToPoint : MonoBehaviour
             _dashCooldown = 0.5f;
             _animator.SetBool("IsDashing", true);
         }
-        _target = transform.position;
 
         _timer = 0f;
     }
 
-    private void SetTargetPosition()
-    {
-        _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _target.z = transform.position.z;
-        _timer += Time.deltaTime;
-
-        _animator.SetBool("IsRunning", true);
-        if (!Mathf.Approximately(0, direction.x))
-        {
-            transform.rotation = direction.x < 0 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
-        }
-    }
-
     private IEnumerator DashLength()
     {
-        _targetDash = _target;
         _dashLength = 0.24f;
         yield return new WaitForSeconds(_dashLength);
-        _target = transform.position;
         _animator.SetBool("IsDashing", false);
-
     }
 }
