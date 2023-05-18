@@ -20,31 +20,34 @@ public class MoveToPoint : MonoBehaviour
 
     void Start()
     {
-        _target = transform.position;
+        //_target = transform.position;
     }
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Time.timeScale == 1)
         {
-            SetTargetPosition();
+            if (Input.GetMouseButton(0))
+            {
+                SetTargetPosition();
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                CheckCanDash();
+            }
+
+            Dash();
+
+            DashCooldown();
+
+            direction = _target - transform.position;
+            direction.Normalize();
+
+            // define as condições de animação
+            _animator.SetFloat("moveX", direction.x);
+            _animator.SetFloat("moveY", direction.y);
         }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            CheckCanDash();
-        }
-
-        Dash();
-
-        DashCooldown();
-
-        direction = _target - transform.position;
-        direction.Normalize();
-
-        // define as condições de animação
-        _animator.SetFloat("moveX", direction.x);
-        _animator.SetFloat("moveY", direction.y);
     }
 
     private void DashCooldown()

@@ -7,6 +7,7 @@ public class ChickenSpawner : MonoBehaviour
     [SerializeField] private GameObject _chickenPrefab;
     [SerializeField] private GameObject _playerGameObject;
     [SerializeField] private float _spawnTimer = 1f;
+    [SerializeField] private GameData _gameData;
 
     private float _timer;
 
@@ -14,6 +15,7 @@ public class ChickenSpawner : MonoBehaviour
 
     void Start()
     {
+        _gameData.SpawnTime = _spawnTimer;
         _timer = _spawnTimer;
     }
 
@@ -25,7 +27,7 @@ public class ChickenSpawner : MonoBehaviour
         {
             _playerVector3 = _playerGameObject.transform.position;
             SpawnChicken();
-            _timer = _spawnTimer;
+            _timer = _gameData.SpawnTime;
         }
     }
 
@@ -41,29 +43,29 @@ public class ChickenSpawner : MonoBehaviour
 
     private Vector3 GetRandomCornerPosition()
     {
-        float randomX = Random.Range(0f, 1f);
-        float randomY = Random.Range(0f, 1f);
+        float randomNum = Random.Range(0f, 100f);
+
         Vector3 edgePosition = Vector3.zero;
 
-        if (randomX < 0.5f && randomY < 0.5f)
+        if (randomNum <= 34)
         {
             // Canto  esquerdo
             edgePosition = new Vector3(0f, Random.Range(0f, Screen.height), 0f);
         }
-        else if (randomX < 0.5f && randomY >= 0.5f)
+        else if (randomNum >= 35 && randomNum <= 69)
         {
-            // Canto superior
-            edgePosition = new Vector3(0f, Random.Range(0f, Screen.height), 0f);
+            // Canto  direito
+            edgePosition = new Vector3(Screen.width, Random.Range(0f, Screen.height), 0f);
         }
-        else if (randomX >= 0.5f && randomY < 0.5f)
+        else if (randomNum >= 70 && randomNum <= 84)
         {
             // Canto inferior 
             edgePosition = new Vector3(Random.Range(0f, Screen.width), 0f, 0f);
         }
         else
         {
-            // Canto  direito
-            edgePosition = new Vector3(Screen.width, Random.Range(0f, Screen.height), 0f);
+            // Canto superior
+            edgePosition = new Vector3(0f, Random.Range(0f, Screen.height), 0f);
         }
 
         return edgePosition;

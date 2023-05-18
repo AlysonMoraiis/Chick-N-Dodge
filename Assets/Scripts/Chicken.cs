@@ -1,16 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Chicken : MonoBehaviour
 {
-    [SerializeField] private float _speed = 5f;
-    public Vector3 _targetPosition;
+    [HideInInspector] public Vector3 _targetPosition;
+    [SerializeField] private GameData _gameData;
+
+    public static event Action OnDisappear;
 
     void Start()
     {
         Vector3 direction = (_targetPosition - transform.position).normalized;
-        GetComponent<Rigidbody2D>().velocity = direction * _speed;
+        GetComponent<Rigidbody2D>().velocity = direction * _gameData.ChickenSpeed;
         RotateTowardsPlayer();
     }
 
@@ -32,5 +35,6 @@ public class Chicken : MonoBehaviour
     private void OnBecameInvisible()
     {
         Destroy(gameObject);
+        OnDisappear?.Invoke();
     }
 }
