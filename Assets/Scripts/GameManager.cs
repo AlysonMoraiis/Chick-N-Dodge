@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         _startButton.onClick.AddListener(HandleStartButton);
         PlayerCollisions.OnDeath += DeathCount;
-        _gameData.ChickenSpeed = 4;
+        _gameData.ChickenSpeed = 3.5f;
+        CheckCanPlayAd();
     }
 
     private void OnDisable()
@@ -36,10 +37,14 @@ public class GameManager : MonoBehaviour
     private void DeathCount()
     {
         _gameData.DeathCounter += 1;
-        Debug.Log("Death");
+    }
+
+    private void CheckCanPlayAd()
+    {
         if (_gameData.DeathCounter >= 3)
         {
             _gameData.DeathCounter = 0;
+            AdmobManager.Instance.LoadInterstitialAd();
             //play ad
         }
     }

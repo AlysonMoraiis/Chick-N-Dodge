@@ -10,11 +10,27 @@ public class Chicken : MonoBehaviour
 
     public static event Action OnDisappear;
 
+    private Rigidbody2D _rigidbody;
+    private Vector3 _direction;
+
     void Start()
     {
-        Vector3 direction = (_targetPosition - transform.position).normalized;
-        GetComponent<Rigidbody2D>().velocity = direction * _gameData.ChickenSpeed;
+        _rigidbody = GetComponent<Rigidbody2D>();
+        StartCoroutine(InitialSpeed());
         RotateTowardsPlayer();
+    }
+
+    private void Update()
+    {
+        _direction = (_targetPosition - transform.position).normalized;
+    }
+
+    IEnumerator InitialSpeed()
+    {
+        _direction = (_targetPosition - transform.position).normalized;
+        _rigidbody.velocity = _direction * 1.3f;
+        yield return new WaitForSeconds(0.7f);
+        _rigidbody.velocity = _direction * _gameData.ChickenSpeed;
     }
 
     private void RotateTowardsPlayer()

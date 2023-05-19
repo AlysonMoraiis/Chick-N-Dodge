@@ -7,7 +7,6 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioSource _musicSource;
     [SerializeField] private AudioSource _sfxSource;
-
     [SerializeField] private Button _muteAndUnmuteButton;
 
     private void OnEnable()

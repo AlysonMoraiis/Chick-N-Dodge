@@ -15,5 +15,5 @@ MonoBehaviour:
   Score: 0
   Highscore: 19
   DeathCounter: 0
-  ChickenSpeed: 4.0004
-  SpawnTime: 0.59988004
+  ChickenSpeed: 3.5
+  SpawnTime: 0.8

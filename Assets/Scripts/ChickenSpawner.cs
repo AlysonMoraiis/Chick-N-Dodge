@@ -26,12 +26,12 @@ public class ChickenSpawner : MonoBehaviour
         if (_timer <= 0)
         {
             _playerVector3 = _playerGameObject.transform.position;
-            SpawnChicken();
+            StartCoroutine(SpawnChicken());
             _timer = _gameData.SpawnTime;
         }
     }
 
-    private void SpawnChicken()
+    private IEnumerator SpawnChicken()
     {
         Vector3 spawnPosition = GetRandomCornerPosition();
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(spawnPosition);
@@ -39,6 +39,14 @@ public class ChickenSpawner : MonoBehaviour
         GameObject chickenObject = Instantiate(_chickenPrefab, worldPosition, Quaternion.identity);
         Chicken chicken = chickenObject.GetComponent<Chicken>();
         chicken._targetPosition = _playerVector3;
+        yield return StartCoroutine(NewPlayerPosition());
+        _playerVector3 = _playerGameObject.transform.position;
+        chicken._targetPosition = _playerVector3;
+    }
+
+    private IEnumerator NewPlayerPosition()
+    {
+        yield return new WaitForSeconds(0.6f);
     }
 
     private Vector3 GetRandomCornerPosition()

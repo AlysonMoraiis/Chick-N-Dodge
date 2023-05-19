@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveToPoint : MonoBehaviour
@@ -10,10 +9,11 @@ public class MoveToPoint : MonoBehaviour
     [SerializeField] private FloatingJoystick _joystick;
 
     private float _timer;
-    private float _dashLength = 0.24f;
+    private const float DashLength = 0.24f;
     private float _dashCooldown = 0.2f;
     private Rigidbody2D _rigidbody;
     private float _moveH, _moveV;
+    private float _lastMoveH, _lastMoveV;
 
     void Start()
     {
@@ -24,19 +24,20 @@ public class MoveToPoint : MonoBehaviour
     {
         if (Time.timeScale == 1)
         {
-            if (Input.GetMouseButtonUp(0))
-            {
-                _animator.SetBool("IsRunning", false);
-                CheckCanDash();
-                Dash();
-            }
-
+            HandleInput();
             Move();
             DashCooldown();
+            UpdateAnimator();
+        }
+    }
 
-            // define as condições de animação
-            _animator.SetFloat("moveX", _joystick.Horizontal);
-            _animator.SetFloat("moveY", _joystick.Vertical);
+    private void HandleInput()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            _animator.SetBool("IsRunning", false);
+            SetIdleDirectionAnimator();
+            _timer = 0f;
         }
     }
 
@@ -47,19 +48,37 @@ public class MoveToPoint : MonoBehaviour
 
         if (_moveH != 0 || _moveV != 0)
         {
-            _animator.SetBool("IsRunning", true);
             _timer += Time.deltaTime;
+            _animator.SetBool("IsRunning", true);
+            _lastMoveH = _moveH;
+            _lastMoveV = _moveV;
+
+            if (ShouldDash())
+            {
+                _animator.SetBool("IsRunning", false);
+                CheckCanDash();
+                Dash();
+            }
         }
 
-        if (!Mathf.Approximately(0, _joystick.Horizontal))
-        {
-            transform.rotation = _joystick.Horizontal < 0 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
-        }
+        UpdateRotation();
 
         if (!_animator.GetBool("IsDashing"))
         {
-
             _rigidbody.velocity = new Vector2(_moveH * _speed, _moveV * _speed);
+        }
+    }
+
+    private bool ShouldDash()
+    {
+        return (_moveH >= 0.6f || _moveH <= -0.6f || _moveV >= 0.6f || _moveV <= -0.6f) && _timer <= 0.1f;
+    }
+
+    private void UpdateRotation()
+    {
+        if (!Mathf.Approximately(0, _joystick.Horizontal))
+        {
+            transform.rotation = _joystick.Horizontal < 0 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
         }
     }
 
@@ -73,9 +92,8 @@ public class MoveToPoint : MonoBehaviour
 
     private void Dash()
     {
-        if (_dashLength > 0)
+        if (DashLength > 0)
         {
-            _dashLength -= Time.deltaTime;
             Vector2 dashDirection = new Vector2(_moveH, _moveV).normalized;
             _rigidbody.velocity = dashDirection * _dashSpeed;
         }
@@ -83,25 +101,42 @@ public class MoveToPoint : MonoBehaviour
 
     private void CheckCanDash()
     {
-        _animator.SetFloat("lastX", _moveH);
-        _animator.SetFloat("lastY", _moveV);
-        _animator.SetBool("IsRunning", false);
+        SetIdleDirectionAnimator();
 
         if (_timer < 0.2f && _dashCooldown <= 0)
         {
-            StartCoroutine(DashLength());
-            Debug.Log("Dash");
+            StartCoroutine(DashCoroutine());
             _dashCooldown = 0.5f;
             _animator.SetBool("IsDashing", true);
         }
-
-        _timer = 0f;
     }
 
-    private IEnumerator DashLength()
+    private void SetIdleDirectionAnimator()
     {
-        _dashLength = 0.24f;
-        yield return new WaitForSeconds(_dashLength);
+        _animator.SetFloat("lastX", _lastMoveH);
+        _animator.SetFloat("lastY", _lastMoveV);
+        _animator.SetBool("IsRunning", false);
+    }
+
+    private IEnumerator DashCoroutine()
+    {
+        yield return new WaitForSeconds(DashLength);
         _animator.SetBool("IsDashing", false);
+
+        if (_moveH != 0 || _moveV != 0)
+        {
+            _animator.SetBool("IsRunning", true);
+        }
+        else
+        {
+            _animator.SetBool("IsRunning", false);
+            SetIdleDirectionAnimator();
+        }
+    }
+
+    private void UpdateAnimator()
+    {
+        _animator.SetFloat("moveX", _joystick.Horizontal);
+        _animator.SetFloat("moveY", _joystick.Vertical);
     }
 }
