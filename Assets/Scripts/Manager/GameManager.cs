@@ -8,13 +8,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button _startButton;
     [SerializeField] private GameObject _menuScreen;
     [SerializeField] private GameData _gameData;
+    [SerializeField] private float _chickenSpeed = 3.5f;
 
     void Start()
     {
         Time.timeScale = 0;
         _startButton.onClick.AddListener(HandleStartButton);
         PlayerCollisions.OnDeath += DeathCount;
-        _gameData.ChickenSpeed = 3.5f;
+        _gameData.ChickenSpeed = _chickenSpeed;
         CheckCanPlayAd();
     }
 

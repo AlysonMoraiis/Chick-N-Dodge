@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameData
   m_EditorClassIdentifier: 
   Score: 0
-  Highscore: 19
+  Highscore: 0
   DeathCounter: 0
-  ChickenSpeed: 3.5
-  SpawnTime: 0.8
+  ChickenSpeed: 3.5004
+  SpawnTime: 0.79988

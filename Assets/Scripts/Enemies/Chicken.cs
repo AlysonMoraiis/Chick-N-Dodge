@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Chicken : MonoBehaviour
 {
-    [HideInInspector] public Vector3 _targetPosition;
     [SerializeField] private GameData _gameData;
 
+    [HideInInspector] public Vector3 _targetPosition;
     public static event Action OnDisappear;
 
     private Rigidbody2D _rigidbody;

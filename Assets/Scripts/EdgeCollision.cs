@@ -1,10 +1,9 @@
-using System.Diagnostics;
 using UnityEngine;
 
 public class EdgeCollision : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
-    [SerializeField] private ScreenSide _screenSide = ScreenSide.Right;
+    [SerializeField] private ScreenSide _screenSide;
 
     private enum ScreenSide
     {
@@ -18,7 +17,6 @@ public class EdgeCollision : MonoBehaviour
     {
         if (_camera == null)
         {
-            // Se a referência da câmera não for definida, use a câmera principal
             _camera = Camera.main;
         }
 
@@ -31,49 +29,46 @@ public class EdgeCollision : MonoBehaviour
         float objectHeight = _camera.orthographicSize * 2f;
         float objectWidth = objectHeight * _camera.aspect;
 
-        // Define a escala do objeto com base na largura e altura desejadas
         transform.localScale = new Vector3(objectWidth, objectHeight, 1f);
     }
 
     private void AdjustPosition()
     {
-        float cameraRightEdge;
-        float objectHalfWidth;
-        float desiredXPosition;
         Vector3 newPosition;
 
         switch (_screenSide)
         {
             case ScreenSide.Right:
-                cameraRightEdge = _camera.aspect * _camera.orthographicSize;
-                objectHalfWidth = transform.localScale.x / 2f;
-                desiredXPosition = cameraRightEdge + objectHalfWidth;
-                newPosition = new Vector3(desiredXPosition, transform.position.y, transform.position.z);
-                transform.position = newPosition;
+                newPosition = CalculatePosition(_camera.aspect * _camera.orthographicSize, transform.localScale.x / 2f);
                 break;
             case ScreenSide.Left:
-                cameraRightEdge = -_camera.aspect * _camera.orthographicSize;
-                objectHalfWidth = transform.localScale.x / 2f;
-                desiredXPosition = cameraRightEdge - objectHalfWidth;
-                newPosition = new Vector3(desiredXPosition, transform.position.y, transform.position.z);
-                transform.position = newPosition;
+                newPosition = CalculatePosition(-_camera.aspect * _camera.orthographicSize, -transform.localScale.x / 2f);
                 break;
             case ScreenSide.Bottom:
-                cameraRightEdge = -_camera.orthographicSize;
-                objectHalfWidth = transform.localScale.y / 2f;
-                desiredXPosition = cameraRightEdge - objectHalfWidth;
-                newPosition = new Vector3(transform.position.x, desiredXPosition, transform.position.z);
-                transform.position = newPosition;
+                newPosition = CalculatePosition(-_camera.orthographicSize, -transform.localScale.y / 2f, true);
                 break;
             default:
-                cameraRightEdge = _camera.orthographicSize;
-                objectHalfWidth = transform.localScale.y / 2f;
-                desiredXPosition = cameraRightEdge + objectHalfWidth;
-                newPosition = new Vector3(transform.position.x, desiredXPosition, transform.position.z);
-                transform.position = newPosition;
+                newPosition = CalculatePosition(_camera.orthographicSize, transform.localScale.y / 2f, true);
                 break;
         }
 
+        transform.position = newPosition;
+    }
+
+    private Vector3 CalculatePosition(float cameraEdge, float objectHalfSize, bool isVertical = false)
+    {
+        float desiredPosition = cameraEdge + objectHalfSize;
+        Vector3 newPosition;
+
+        if (isVertical)
+        {
+            newPosition = new Vector3(transform.position.x, desiredPosition, transform.position.z);
+        }
+        else
+        {
+            newPosition = new Vector3(desiredPosition, transform.position.y, transform.position.z);
+        }
+
+        return newPosition;
     }
 }
-

@@ -406,9 +406,9 @@ BlendTree:
   m_Name: Movement
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 817dd036a71e2394bbc74190f2ebee86, type: 2}
+    m_Motion: {fileID: 7400000, guid: 9069bcc81b05ebc4cabbe552a61b6363, type: 2}
     m_Threshold: 0
-    m_Position: {x: 0.2, y: 0.2}
+    m_Position: {x: 0, y: -0.1}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: moveX
@@ -416,6 +416,14 @@ BlendTree:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 817dd036a71e2394bbc74190f2ebee86, type: 2}
     m_Threshold: 0.14285715
+    m_Position: {x: 0.2, y: 0.2}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: moveX
+    m_Mirror: 0
+  - serializedVersion: 2
+    m_Motion: {fileID: 7400000, guid: 817dd036a71e2394bbc74190f2ebee86, type: 2}
+    m_Threshold: 0.2857143
     m_Position: {x: -0.2, y: 0.2}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -423,7 +431,7 @@ BlendTree:
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: cbe6b8db44c7a3f469e6677982179e41, type: 2}
-    m_Threshold: 0.2857143
+    m_Threshold: 0.42857143
     m_Position: {x: 0.1, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -431,7 +439,7 @@ BlendTree:
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: cbe6b8db44c7a3f469e6677982179e41, type: 2}
-    m_Threshold: 0.42857143
+    m_Threshold: 0.5714286
     m_Position: {x: -0.1, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -439,16 +447,8 @@ BlendTree:
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 982562adddc85ff43a4f11afb4d81f55, type: 2}
-    m_Threshold: 0.5714286
-    m_Position: {x: 0, y: 0.1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: moveX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 9069bcc81b05ebc4cabbe552a61b6363, type: 2}
     m_Threshold: 0.71428573
-    m_Position: {x: 0, y: -0.1}
+    m_Position: {x: 0, y: 0.1}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: moveX

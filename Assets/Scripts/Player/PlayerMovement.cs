@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class MoveToPoint : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private float _speed = 5f;
